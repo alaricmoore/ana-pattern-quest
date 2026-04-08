@@ -62,3 +62,82 @@ body {
 .quiz-grid {
   margin-bottom: 40px;
 }
+
+/* Quiz layout — on mobile, show feedback/next above the cards */
+.quiz-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.quiz-question { order: 1; }
+.quiz-feedback { order: 2; }
+.quiz-next { order: 3; }
+.quiz-choices { order: 4; }
+
+@media (min-width: 768px) {
+  .quiz-question { order: 1; }
+  .quiz-choices { order: 2; }
+  .quiz-feedback { order: 3; }
+  .quiz-next { order: 4; }
+}
+
+/* Pattern catalog on info page */
+.pattern-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Learn mode card layout */
+.learn-card-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.learn-card-image {
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.learn-card-image > div,
+.learn-card-image > svg {
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+.learn-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.learn-card-goblin {
+  background: rgb(20 83 45 / 0.3);
+  border: 1px solid #15803d;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .learn-card-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 40px;
+    margin-bottom: 32px;
+  }
+
+  .learn-card-info {
+    gap: 20px;
+    font-size: 1rem;
+  }
+
+  .learn-card-goblin {
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+}

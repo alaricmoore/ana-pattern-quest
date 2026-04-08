@@ -935,10 +935,19 @@ function ImageRenderer({ patternId, size = 300 }) {
   const pattern = PATTERNS.find(p => p.id === patternId);
   if (!pattern) return null;
 
-  const [imageError, setImageError] = useState(false);
-  const [imageIndex, setImageIndex] = useState(0);
-
   const images = pattern.images || [];
+
+  const [imageError, setImageError] = useState(false);
+  const [imageIndex, setImageIndex] = useState(() =>
+    Math.floor(Math.random() * images.length)
+  );
+
+  // Pick a new random image whenever the pattern changes
+  useEffect(() => {
+    setImageIndex(Math.floor(Math.random() * images.length));
+    setImageError(false);
+  }, [patternId, images.length]);
+
   const currentImage = images[imageIndex];
 
   // Fallback to SVG if no images or image failed to load
@@ -948,7 +957,7 @@ function ImageRenderer({ patternId, size = 300 }) {
 
   return (
     <div className="relative rounded-lg border border-gray-700 overflow-hidden bg-black"
-      style={{ width: size, height: size }}>
+      style={{ width: size, height: size, maxWidth: '100%', aspectRatio: '1' }}>
       <img
         src={currentImage}
         alt={`${pattern.name} immunofluorescence`}
@@ -956,15 +965,27 @@ function ImageRenderer({ patternId, size = 300 }) {
         onError={() => setImageError(true)}
       />
       {images.length > 1 && (
-        <button
-          className="absolute bottom-2 right-2 bg-black/60 text-green-400 text-xs px-2 py-1 rounded"
-          onClick={(e) => {
-            e.stopPropagation();
-            setImageIndex((imageIndex + 1) % images.length);
-          }}
-        >
-          {imageIndex + 1}/{images.length}
-        </button>
+        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-1 py-1 bg-black/50">
+          <button
+            className="text-green-400 hover:text-green-300 px-2 py-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImageIndex((imageIndex - 1 + images.length) % images.length);
+            }}
+          >
+            ◀
+          </button>
+          <span className="text-green-400 text-xs">{imageIndex + 1}/{images.length}</span>
+          <button
+            className="text-green-400 hover:text-green-300 px-2 py-1"
+            onClick={(e) => {
+              e.stopPropagation();
+              setImageIndex((imageIndex + 1) % images.length);
+            }}
+          >
+            ▶
+          </button>
+        </div>
       )}
     </div>
   );
@@ -1109,19 +1130,19 @@ function ANAPatternGame() {
               </div>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-6 md:gap-10 mb-6 md:mb-8">
-              <div className="shrink-0 mx-auto md:mx-0">
-                <Renderer patternId={pattern.id} size={typeof window !== 'undefined' && window.innerWidth < 768 ? 260 : 400} />
+            <div className="learn-card-layout">
+              <div className="learn-card-image">
+                <Renderer patternId={pattern.id} size={400} />
               </div>
-              <div className="flex-1 space-y-4 md:space-y-5">
-                <p className="text-gray-300 text-sm md:text-base"><strong>Description:</strong> {pattern.description}</p>
-                <p className="text-gray-300 text-sm md:text-base"><strong>Key Feature:</strong> {pattern.keyFeature}</p>
-                <p className="text-gray-300 text-sm md:text-base"><strong>Antigens:</strong> {pattern.antigens}</p>
-                <p className="text-gray-300 text-sm md:text-base"><strong>Clinical Association:</strong> {pattern.clinicalAssociation}</p>
+              <div className="learn-card-info">
+                <p className="text-gray-300"><strong>Description:</strong> {pattern.description}</p>
+                <p className="text-gray-300"><strong>Key Feature:</strong> {pattern.keyFeature}</p>
+                <p className="text-gray-300"><strong>Antigens:</strong> {pattern.antigens}</p>
+                <p className="text-gray-300"><strong>Clinical Association:</strong> {pattern.clinicalAssociation}</p>
               </div>
             </div>
 
-            <div className="bg-green-900/30 border border-green-700 rounded p-4 md:p-5 mb-6 md:mb-8">
+            <div className="learn-card-goblin">
               <p className="text-sm text-green-100"><strong>🧙 Goblin Note:</strong> {pattern.goblinNote}</p>
             </div>
 
@@ -1194,54 +1215,56 @@ function ANAPatternGame() {
             </div>
           </div>
 
-          <h3 className="text-xl mb-8 text-center">{quizQuestion}</h3>
+          <div className="quiz-content">
+            <h3 className="text-xl mb-8 text-center quiz-question">{quizQuestion}</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 quiz-grid">
-            {choices.map(choice => (
-              <button
-                key={choice.id}
-                onClick={() => {
-                  handleQuizAnswer(choice.id);
-                }}
-                disabled={selectedAnswer !== null}
-                className={`rounded-lg overflow-hidden border-2 transition transform ${selectedAnswer === null
-                  ? 'border-gray-700 hover:border-green-400 hover:scale-105'
-                  : selectedAnswer === choice.id
-                    ? choice.id === quizPattern1.id
-                      ? 'border-green-500 scale-105'
-                      : 'border-red-500'
-                    : choice.id === quizPattern1.id
-                      ? 'border-green-500'
-                      : 'border-gray-700 opacity-60'
-                  }`}
-              >
-                <div className="bg-gray-800 p-6">
-                  <Renderer patternId={choice.id} size={320} />
-                  <p className="mt-5 text-center font-bold">{choice.id}</p>
-                </div>
-              </button>
-            ))}
+            {feedback && (
+              <div className={`quiz-feedback p-5 rounded-lg mb-8 ${selectedAnswer === quizPattern1.id
+                ? 'bg-green-900 text-green-100 border border-green-700'
+                : 'bg-red-900 text-red-100 border border-red-700'
+                }`}>
+                {feedback}
+              </div>
+            )}
+
+            {selectedAnswer !== null && (
+              <div className="quiz-next flex gap-4 mb-8">
+                <button
+                  onClick={() => generateQuizQuestion()}
+                  className="flex-1 px-6 py-3 bg-green-600 rounded hover:bg-green-500 font-bold"
+                >
+                  Next Question
+                </button>
+              </div>
+            )}
+
+            <div className="quiz-choices grid grid-cols-1 md:grid-cols-2 gap-10 quiz-grid">
+              {choices.map(choice => (
+                <button
+                  key={choice.id}
+                  onClick={() => {
+                    handleQuizAnswer(choice.id);
+                  }}
+                  disabled={selectedAnswer !== null}
+                  className={`rounded-lg overflow-hidden border-2 transition transform ${selectedAnswer === null
+                    ? 'border-gray-700 hover:border-green-400 hover:scale-105'
+                    : selectedAnswer === choice.id
+                      ? choice.id === quizPattern1.id
+                        ? 'border-green-500 scale-105'
+                        : 'border-red-500'
+                      : choice.id === quizPattern1.id
+                        ? 'border-green-500'
+                        : 'border-gray-700 opacity-60'
+                    }`}
+                >
+                  <div className="bg-gray-800 p-6">
+                    <Renderer patternId={choice.id} size={320} />
+                    <p className="mt-5 text-center font-bold">{choice.id}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-
-          {feedback && (
-            <div className={`p-5 rounded-lg mb-8 ${selectedAnswer === quizPattern1.id
-              ? 'bg-green-900 text-green-100 border border-green-700'
-              : 'bg-red-900 text-red-100 border border-red-700'
-              }`}>
-              {feedback}
-            </div>
-          )}
-
-          {selectedAnswer !== null && (
-            <div className="flex gap-4">
-              <button
-                onClick={() => generateQuizQuestion()}
-                className="flex-1 px-6 py-3 bg-green-600 rounded hover:bg-green-500 font-bold"
-              >
-                Next Question
-              </button>
-            </div>
-          )}
         </div>
       </div>
     );
@@ -1318,16 +1341,39 @@ function ANAPatternGame() {
     const infoContent = {
       patterns: {
         title: '31 ICAP ANA Patterns',
+        wide: true,
         body: (
-          <div className="space-y-6">
-            <p>The International Consensus on ANA Patterns (ICAP) has standardized 31 antinuclear antibody immunofluorescence patterns, numbered AC-0 through AC-31.</p>
-            <p>These patterns are observed when patient serum is applied to HEp-2 cells on a glass slide and viewed under a fluorescence microscope. Each pattern corresponds to specific autoantibody targets and clinical associations.</p>
-            <p>Categories include <strong>nuclear</strong>, <strong>cytoplasmic</strong>, <strong>mitotic</strong>, and <strong>composite</strong> patterns.</p>
-            <p className="text-green-400">
-              <a href="https://anapatterns.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-300">
-                Visit anapatterns.org →
-              </a>
-            </p>
+          <div>
+            <div className="text-center space-y-4 mb-12">
+              <p>The International Consensus on ANA Patterns (ICAP) has standardized 31 antinuclear antibody immunofluorescence patterns, numbered AC-0 through AC-31.</p>
+              <p>These patterns are observed when patient serum is applied to HEp-2 cells on a glass slide and viewed under a fluorescence microscope. Each pattern corresponds to specific autoantibody targets and clinical associations.</p>
+              <p>Categories include <strong>nuclear</strong>, <strong>cytoplasmic</strong>, <strong>mitotic</strong>, and <strong>composite</strong> patterns.</p>
+              <p className="text-green-400">
+                <a href="https://anapatterns.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-300">
+                  Visit anapatterns.org →
+                </a>
+              </p>
+            </div>
+            <div className="pattern-catalog">
+              {PATTERNS.map(p => (
+                <div key={p.id} className="flex flex-col md:flex-row gap-5 bg-gray-700/40 rounded-lg p-5">
+                  <div className="shrink-0 mx-auto md:mx-0">
+                    <ImageRenderer patternId={p.id} size={140} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                      <span className="text-green-400 font-bold text-lg">{p.id}</span>
+                      <span className="font-bold text-lg">{p.name}</span>
+                      <span className="px-2 py-0.5 bg-green-900 rounded text-xs capitalize">{p.category}</span>
+                      <span className="px-2 py-0.5 bg-green-800 rounded text-xs">Tier {p.tier}</span>
+                    </div>
+                    <p className="text-sm text-gray-300 mb-1">{p.description}</p>
+                    <p className="text-sm text-gray-400"><strong>Antigens:</strong> {p.antigens}</p>
+                    <p className="text-sm text-gray-400"><strong>Clinical:</strong> {p.clinicalAssociation}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ),
       },
@@ -1370,16 +1416,16 @@ function ANAPatternGame() {
 
     const page = infoContent[infoPage];
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-12 lg:p-16">
+      <div className="min-h-screen bg-gray-900 text-white p-6 md:p-12 lg:p-16">
         <button
           onClick={() => setInfoPage(null)}
           className="mb-8 flex items-center gap-2 text-green-400 hover:text-green-300"
         >
           <ChevronLeft size={20} /> Back
         </button>
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-bold mb-10 text-green-400">{page.title}</h2>
-          <div className="bg-gray-800 rounded-lg p-10 text-gray-300 leading-relaxed text-base">
+        <div className={`mx-auto ${page.wide ? 'max-w-5xl' : 'max-w-3xl'}`}>
+          <h2 className="text-3xl font-bold mb-10 text-green-400 text-center">{page.title}</h2>
+          <div className="bg-gray-800 rounded-lg p-6 md:p-10 text-gray-300 leading-relaxed text-base">
             {page.body}
           </div>
         </div>
