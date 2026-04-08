@@ -27,8 +27,14 @@ body {
 /* Feature info grid */
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .feature-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
 
 /* Feature cards */
@@ -50,4 +56,9 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
+}
+
+/* Gap between pattern cards and feedback/info below */
+.quiz-grid {
+  margin-bottom: 40px;
 }
