@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+:root {
+  font-family: 'Courier Prime', 'Courier New', Courier, monospace;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Button containers — vertical spacing between stacked buttons */
+.button-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Feature info grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+/* Feature cards */
+.feature-card {
+  padding: 28px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+  border: 1px solid transparent;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  border-color: #22c55e;
+}
+
+/* Horizontal button/badge rows */
+.button-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
