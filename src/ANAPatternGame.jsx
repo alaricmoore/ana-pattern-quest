@@ -1056,16 +1056,25 @@ function ANAPatternGame() {
     setEndlessStreak(0);
   };
 
+  const calcPoints = (pattern, streak) => {
+    const tierPoints = pattern.tier; // 1-4 pts based on tier
+    const clinicalBonus = difficulty === 'clinical' ? tierPoints : 0; // double in clinical
+    const streakBonus = Math.floor(streak / 3); // +1 for every 3 in a row
+    return tierPoints + clinicalBonus + streakBonus;
+  };
+
   const handleQuizAnswer = (answer) => {
     setSelectedAnswer(answer);
     const correct = answer === quizPattern1.id;
 
     if (correct) {
-      setQuizScore(quizScore + 1);
-      setQuizStreak(quizStreak + 1);
-      setFeedback(`Correct! ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
+      const newStreak = quizStreak + 1;
+      const points = calcPoints(quizPattern1, newStreak);
+      setQuizScore(quizScore + points);
+      setQuizStreak(newStreak);
+      setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
 
-      if (quizStreak + 1 >= 5 && quizTier < 4 && !unlockedTiers.includes(quizTier + 1)) {
+      if (newStreak >= 5 && quizTier < 4 && !unlockedTiers.includes(quizTier + 1)) {
         setUnlockedTiers([...unlockedTiers, quizTier + 1]);
       }
     } else {
@@ -1084,9 +1093,11 @@ function ANAPatternGame() {
     setEndlessAnswer(answer);
     const correct = answer === quizPattern1.id;
     if (correct) {
-      setEndlessScore(endlessScore + 1);
-      setEndlessStreak(endlessStreak + 1);
-      setEndlessFeedback(`Correct! ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
+      const newStreak = endlessStreak + 1;
+      const points = calcPoints(quizPattern1, newStreak);
+      setEndlessScore(endlessScore + points);
+      setEndlessStreak(newStreak);
+      setEndlessFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
     } else {
       setEndlessStreak(0);
       const confusedWith = quizPattern1.confusedWith.includes(answer) ? `(commonly confused with ${quizPattern1.name})` : '';
