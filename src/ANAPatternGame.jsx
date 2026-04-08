@@ -1463,9 +1463,25 @@ function ANAPatternGame() {
           </div>
         </div>
 
-        <div className="mt-20 text-xs text-gray-500">
+        <div className="mt-20 text-xs text-gray-500 space-y-3">
           <p>Built for patients, students, lab professionals, and nerds.</p>
           <p>Created by C. Alaric Moore</p>
+          <p>
+            Clinical images courtesy of{' '}
+            <a href="https://anapatterns.org" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">
+              ICAP — International Consensus on ANA Patterns (anapatterns.org)
+            </a>
+          </p>
+          <p>
+            Feedback:{' '}
+            <a href="mailto:dev@anapatternquest.com" className="text-green-400 hover:text-green-300 underline">
+              dev@anapatternquest.com
+            </a>
+            {' · '}
+            <a href="https://github.com/alaricmoore/ana-pattern-quest" target="_blank" rel="noopener noreferrer" className="text-green-400 hover:text-green-300 underline">
+              GitHub
+            </a>
+          </p>
         </div>
       </div>
     </div>
