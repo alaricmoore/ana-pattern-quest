@@ -1072,10 +1072,10 @@ function ANAPatternGame() {
     const pattern = PATTERNS[currentPatternIndex];
     const Renderer = difficulty === 'clinical' ? ImageRenderer : PatternRenderer;
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-8">
+      <div className="min-h-screen bg-gray-900 text-white p-4 md:p-8">
         <button
           onClick={() => setMode('menu')}
-          className="mb-8 flex items-center gap-2 text-green-400 hover:text-green-300"
+          className="mb-6 md:mb-8 flex items-center gap-2 text-green-400 hover:text-green-300"
         >
           <ChevronLeft size={20} /> Back
         </button>
@@ -1099,29 +1099,29 @@ function ANAPatternGame() {
             </div>
           </div>
 
-          <div className="bg-gray-800 rounded-lg p-8 mb-8">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-2xl font-bold">{pattern.name}</h3>
-              <div className="flex gap-3">
-                <span className="px-3 py-1 bg-green-800 rounded text-sm">{pattern.id}</span>
-                <span className="px-3 py-1 bg-green-700 rounded text-sm capitalize">{pattern.category}</span>
-                <span className="px-3 py-1 bg-green-900 rounded text-sm capitalize">Tier {pattern.tier}</span>
+          <div className="bg-gray-800 rounded-lg p-5 md:p-8 mb-8">
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+              <h3 className="text-xl md:text-2xl font-bold">{pattern.name}</h3>
+              <div className="flex gap-2 md:gap-3">
+                <span className="px-2 md:px-3 py-1 bg-green-800 rounded text-xs md:text-sm">{pattern.id}</span>
+                <span className="px-2 md:px-3 py-1 bg-green-700 rounded text-xs md:text-sm capitalize">{pattern.category}</span>
+                <span className="px-2 md:px-3 py-1 bg-green-900 rounded text-xs md:text-sm capitalize">Tier {pattern.tier}</span>
               </div>
             </div>
 
-            <div className="flex gap-10 mb-8">
-              <div className="shrink-0">
-                <Renderer patternId={pattern.id} size={400} />
+            <div className="flex flex-col md:flex-row gap-6 md:gap-10 mb-6 md:mb-8">
+              <div className="shrink-0 mx-auto md:mx-0">
+                <Renderer patternId={pattern.id} size={typeof window !== 'undefined' && window.innerWidth < 768 ? 260 : 400} />
               </div>
-              <div className="flex-1 space-y-5">
-                <p className="text-gray-300"><strong>Description:</strong> {pattern.description}</p>
-                <p className="text-gray-300"><strong>Key Feature:</strong> {pattern.keyFeature}</p>
-                <p className="text-gray-300"><strong>Antigens:</strong> {pattern.antigens}</p>
-                <p className="text-gray-300"><strong>Clinical Association:</strong> {pattern.clinicalAssociation}</p>
+              <div className="flex-1 space-y-4 md:space-y-5">
+                <p className="text-gray-300 text-sm md:text-base"><strong>Description:</strong> {pattern.description}</p>
+                <p className="text-gray-300 text-sm md:text-base"><strong>Key Feature:</strong> {pattern.keyFeature}</p>
+                <p className="text-gray-300 text-sm md:text-base"><strong>Antigens:</strong> {pattern.antigens}</p>
+                <p className="text-gray-300 text-sm md:text-base"><strong>Clinical Association:</strong> {pattern.clinicalAssociation}</p>
               </div>
             </div>
 
-            <div className="bg-green-900/30 border border-green-700 rounded p-5 mb-8">
+            <div className="bg-green-900/30 border border-green-700 rounded p-4 md:p-5 mb-6 md:mb-8">
               <p className="text-sm text-green-100"><strong>🧙 Goblin Note:</strong> {pattern.goblinNote}</p>
             </div>
 
