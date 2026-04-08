@@ -1077,15 +1077,26 @@ function ANAPatternGame() {
     }
   };
 
+  const [endlessAnswer, setEndlessAnswer] = useState(null);
+  const [endlessFeedback, setEndlessFeedback] = useState('');
+
   const handleEndlessAnswer = (answer) => {
+    setEndlessAnswer(answer);
     const correct = answer === quizPattern1.id;
     if (correct) {
       setEndlessScore(endlessScore + 1);
       setEndlessStreak(endlessStreak + 1);
+      setEndlessFeedback(`Correct! ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
     } else {
       setEndlessStreak(0);
+      const confusedWith = quizPattern1.confusedWith.includes(answer) ? `(commonly confused with ${quizPattern1.name})` : '';
+      setEndlessFeedback(`Incorrect. That's ${answer}. The correct answer is ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature} ${confusedWith}`);
     }
-    setTimeout(generateQuizQuestion, 1200);
+    setTimeout(() => {
+      setEndlessAnswer(null);
+      setEndlessFeedback('');
+      generateQuizQuestion();
+    }, 2500);
   };
 
   // ===== LEARN MODE =====
@@ -1313,23 +1324,44 @@ function ANAPatternGame() {
             </div>
           </div>
 
-          <h3 className="text-xl mb-8 text-center">{quizQuestion}</h3>
+          <div className="quiz-content">
+            <h3 className="text-xl mb-8 text-center quiz-question">{quizQuestion}</h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 quiz-grid">
-            {choices.map(choice => (
-              <button
-                key={choice.id}
-                onClick={() => {
-                  handleEndlessAnswer(choice.id);
-                }}
-                className={`rounded-lg overflow-hidden border-2 transition transform border-gray-700 hover:border-green-400 hover:scale-105`}
-              >
-                <div className="bg-gray-800 p-6">
-                  <Renderer patternId={choice.id} size={320} />
-                  <p className="mt-5 text-center font-bold">{choice.id}</p>
-                </div>
-              </button>
-            ))}
+            {endlessFeedback && (
+              <div className={`quiz-feedback p-5 rounded-lg mb-8 ${endlessAnswer === quizPattern1.id
+                ? 'bg-green-900 text-green-100 border border-green-700'
+                : 'bg-red-900 text-red-100 border border-red-700'
+                }`}>
+                {endlessFeedback}
+              </div>
+            )}
+
+            <div className="quiz-choices grid grid-cols-1 md:grid-cols-2 gap-10 quiz-grid">
+              {choices.map(choice => (
+                <button
+                  key={choice.id}
+                  onClick={() => {
+                    handleEndlessAnswer(choice.id);
+                  }}
+                  disabled={endlessAnswer !== null}
+                  className={`rounded-lg overflow-hidden border-2 transition transform ${endlessAnswer === null
+                    ? 'border-gray-700 hover:border-green-400 hover:scale-105'
+                    : endlessAnswer === choice.id
+                      ? choice.id === quizPattern1.id
+                        ? 'border-green-500 scale-105'
+                        : 'border-red-500'
+                      : choice.id === quizPattern1.id
+                        ? 'border-green-500'
+                        : 'border-gray-700 opacity-60'
+                    }`}
+                >
+                  <div className="bg-gray-800 p-6">
+                    <Renderer patternId={choice.id} size={320} />
+                    <p className="mt-5 text-center font-bold">{choice.id}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
