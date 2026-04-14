@@ -1000,7 +1000,18 @@ function ANAPatternGame() {
   const [difficulty, setDifficulty] = useState('practice'); // 'practice' (SVG) or 'clinical' (real images)
   const [currentPatternIndex, setCurrentPatternIndex] = useState(0);
   const [quizTier, setQuizTier] = useState(1);
-  const [unlockedTiers, setUnlockedTiers] = useState([1]);
+  const [unlockedTiers, setUnlockedTiers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ana-quest:unlockedTiers');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.every(n => Number.isInteger(n) && n >= 1 && n <= 4)) {
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return [1];
+  });
   const [quizScore, setQuizScore] = useState(0);
   const [quizStreak, setQuizStreak] = useState(0);
   const [endlessScore, setEndlessScore] = useState(0);
@@ -1010,6 +1021,7 @@ function ANAPatternGame() {
   const [quizPattern1, setQuizPattern1] = useState(null);
   const [quizPattern2, setQuizPattern2] = useState(null);
   const [quizQuestion, setQuizQuestion] = useState('');
+  const [menuStartTier, setMenuStartTier] = useState(1);
 
   const tierPatterns = useMemo(() => {
     return PATTERNS.filter(p => p.tier <= quizTier).sort(() => Math.random() - 0.5);
@@ -1038,20 +1050,28 @@ function ANAPatternGame() {
     }
   }, [mode, quizTier, generateQuizQuestion]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('ana-quest:unlockedTiers', JSON.stringify(unlockedTiers));
+    } catch (e) {}
+  }, [unlockedTiers]);
+
   const handleLearnMode = () => {
     setMode('learn');
     setCurrentPatternIndex(0);
   };
 
-  const handleQuizMode = () => {
+  const handleQuizMode = (startTier = 1) => {
     setMode('quiz');
-    setQuizTier(1);
+    setQuizTier(startTier);
     setQuizScore(0);
     setQuizStreak(0);
   };
 
-  const handleEndlessMode = () => {
+  const handleEndlessMode = (startTier) => {
+    const tier = startTier ?? Math.max(...unlockedTiers);
     setMode('endless');
+    setQuizTier(tier);
     setEndlessScore(0);
     setEndlessStreak(0);
   };
@@ -1071,11 +1091,18 @@ function ANAPatternGame() {
       const newStreak = quizStreak + 1;
       const points = calcPoints(quizPattern1, newStreak);
       setQuizScore(quizScore + points);
-      setQuizStreak(newStreak);
-      setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
 
-      if (newStreak >= 5 && quizTier < 4 && !unlockedTiers.includes(quizTier + 1)) {
-        setUnlockedTiers([...unlockedTiers, quizTier + 1]);
+      if (newStreak >= 5 && quizTier < 4) {
+        const nextTier = quizTier + 1;
+        if (!unlockedTiers.includes(nextTier)) {
+          setUnlockedTiers([...unlockedTiers, nextTier]);
+        }
+        setQuizTier(nextTier);
+        setQuizStreak(0);
+        setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}). 🎉 Level up! Now on Tier ${nextTier}.`);
+      } else {
+        setQuizStreak(newStreak);
+        setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
       }
     } else {
       setQuizStreak(0);
@@ -1096,8 +1123,19 @@ function ANAPatternGame() {
       const newStreak = endlessStreak + 1;
       const points = calcPoints(quizPattern1, newStreak);
       setEndlessScore(endlessScore + points);
-      setEndlessStreak(newStreak);
-      setEndlessFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
+
+      if (newStreak >= 5 && quizTier < 4) {
+        const nextTier = quizTier + 1;
+        if (!unlockedTiers.includes(nextTier)) {
+          setUnlockedTiers([...unlockedTiers, nextTier]);
+        }
+        setQuizTier(nextTier);
+        setEndlessStreak(0);
+        setEndlessFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}). 🎉 Level up! Now on Tier ${nextTier}.`);
+      } else {
+        setEndlessStreak(newStreak);
+        setEndlessFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
+      }
     } else {
       setEndlessStreak(0);
       const confusedWith = quizPattern1.confusedWith.includes(answer) ? `(commonly confused with ${quizPattern1.name})` : '';
@@ -1233,7 +1271,27 @@ function ANAPatternGame() {
                 <Flame size={18} className="inline mr-2 text-green-400" />
                 Streak: {quizStreak}
               </div>
-              <div className="bg-green-900 px-4 py-2 rounded">Tier {quizTier}</div>
+              <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+                {[1, 2, 3, 4].map(t => {
+                  const locked = !unlockedTiers.includes(t);
+                  const active = quizTier === t;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => {
+                        if (locked) return;
+                        setQuizTier(t);
+                        setQuizStreak(0);
+                      }}
+                      disabled={locked}
+                      title={locked ? 'Locked — reach a 5-streak at the previous tier' : `Switch to Tier ${t}`}
+                      className={`px-3 py-1 rounded text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                    >
+                      {locked ? `🔒${t}` : `T${t}`}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
@@ -1331,6 +1389,27 @@ function ANAPatternGame() {
               <div className="bg-gray-800 px-4 py-2 rounded">
                 <Flame size={18} className="inline mr-2 text-green-400" />
                 Streak: {endlessStreak}
+              </div>
+              <div className="flex gap-1 bg-gray-800 rounded-lg p-1">
+                {[1, 2, 3, 4].map(t => {
+                  const locked = !unlockedTiers.includes(t);
+                  const active = quizTier === t;
+                  return (
+                    <button
+                      key={t}
+                      onClick={() => {
+                        if (locked) return;
+                        setQuizTier(t);
+                        setEndlessStreak(0);
+                      }}
+                      disabled={locked}
+                      title={locked ? 'Locked — reach a 5-streak at the previous tier' : `Switch to Tier ${t}`}
+                      className={`px-3 py-1 rounded text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                    >
+                      {locked ? `🔒${t}` : `T${t}`}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -1510,6 +1589,29 @@ function ANAPatternGame() {
           </div>
         </div>
 
+        <div style={{ marginBottom: '32px' }}>
+          <p className="text-sm text-gray-400" style={{ marginBottom: '12px' }}>Start at tier:</p>
+          <div className="button-row justify-center">
+            <div className="button-row bg-gray-800 rounded-lg p-2">
+              {[1, 2, 3, 4].map(t => {
+                const locked = !unlockedTiers.includes(t);
+                const active = menuStartTier === t;
+                return (
+                  <button
+                    key={t}
+                    onClick={() => !locked && setMenuStartTier(t)}
+                    disabled={locked}
+                    title={locked ? 'Reach a 5-streak at the previous tier to unlock' : `Tier ${t}`}
+                    className={`px-4 py-2 rounded-lg text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    {locked ? `🔒 Tier ${t}` : `Tier ${t}`}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
         <div className="button-stack mb-16">
           <button
             onClick={handleLearnMode}
@@ -1519,14 +1621,14 @@ function ANAPatternGame() {
           </button>
 
           <button
-            onClick={handleQuizMode}
+            onClick={() => handleQuizMode(menuStartTier)}
             className="w-full py-5 bg-green-600 rounded-lg hover:bg-green-500 font-bold text-lg flex items-center justify-center gap-3 transition transform hover:scale-105"
           >
             <Zap size={24} /> Quiz Mode
           </button>
 
           <button
-            onClick={handleEndlessMode}
+            onClick={() => handleEndlessMode(menuStartTier)}
             className="w-full py-5 bg-green-800 rounded-lg hover:bg-green-700 font-bold text-lg flex items-center justify-center gap-3 transition transform hover:scale-105"
           >
             <BarChart3 size={24} /> Endless Mode
