@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Brain, Zap, BarChart3, ChevronLeft, ChevronRight, Trophy, Target, Flame } from 'lucide-react';
+import { Brain, Zap, BarChart3, ChevronLeft, ChevronRight, Trophy, Target, Flame, Lock } from 'lucide-react';
+import { Icon } from '@iconify/react';
 import PATTERNS from './patterns.js';
 
 // ============================================================================
@@ -1099,7 +1100,7 @@ function ANAPatternGame() {
         }
         setQuizTier(nextTier);
         setQuizStreak(0);
-        setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}). 🎉 Level up! Now on Tier ${nextTier}.`);
+        setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}).  Level up! Now on Tier ${nextTier}.`);
       } else {
         setQuizStreak(newStreak);
         setFeedback(`Correct! +${points}pts — ${quizPattern1.name} (${quizPattern1.id}) — ${quizPattern1.keyFeature}`);
@@ -1203,7 +1204,10 @@ function ANAPatternGame() {
             </div>
 
             <div className="learn-card-goblin">
-              <p className="text-sm text-green-100"><strong>🧙 Goblin Note:</strong> {pattern.goblinNote}</p>
+              <p className="text-sm text-green-100 flex items-center gap-2">
+                <Icon icon="streamline-pixel:school-science-test-flask" width="18" height="18" />
+                <span><strong>Goblin Note:</strong> {pattern.goblinNote}</span>
+              </p>
             </div>
 
             <div className="flex gap-4">
@@ -1285,9 +1289,10 @@ function ANAPatternGame() {
                       }}
                       disabled={locked}
                       title={locked ? 'Locked — reach a 5-streak at the previous tier' : `Switch to Tier ${t}`}
-                      className={`px-3 py-1 rounded text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                      className={`px-3 py-1 rounded text-sm transition inline-flex items-center gap-1 ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
                     >
-                      {locked ? `🔒${t}` : `T${t}`}
+                      {locked && <Lock size={12} />}
+                      T{t}
                     </button>
                   );
                 })}
@@ -1404,9 +1409,10 @@ function ANAPatternGame() {
                       }}
                       disabled={locked}
                       title={locked ? 'Locked — reach a 5-streak at the previous tier' : `Switch to Tier ${t}`}
-                      className={`px-3 py-1 rounded text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                      className={`px-3 py-1 rounded text-sm transition inline-flex items-center gap-1 ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
                     >
-                      {locked ? `🔒${t}` : `T${t}`}
+                      {locked && <Lock size={12} />}
+                      T{t}
                     </button>
                   );
                 })}
@@ -1602,9 +1608,10 @@ function ANAPatternGame() {
                     onClick={() => !locked && setMenuStartTier(t)}
                     disabled={locked}
                     title={locked ? 'Reach a 5-streak at the previous tier to unlock' : `Tier ${t}`}
-                    className={`px-4 py-2 rounded-lg text-sm transition ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
+                    className={`px-4 py-2 rounded-lg text-sm transition inline-flex items-center gap-1 ${active ? 'bg-green-700 text-white' : locked ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-white'}`}
                   >
-                    {locked ? `🔒 Tier ${t}` : `Tier ${t}`}
+                    {locked && <Icon icon="material-symbols:lock-outline-sharp" width="14" height="14" />}
+                    Tier {t}
                   </button>
                 );
               })}
