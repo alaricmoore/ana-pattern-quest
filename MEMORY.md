@@ -1,3 +1,0 @@
-- [Alaric profile](user_alaric.md) — electronics technician, avid terrarium builder, and lupus patient
-- [ANA Pattern Game](project_ana_game.md) — React app for ICAP AC pattern recognition, Foldit-inspired, part of goblin universe
-- [Immuno Goblin Universe](project_immuno_goblins.md) — full character cast (Alvin=IgA, Gryf=IgG, etc.) and pedagogical framework
