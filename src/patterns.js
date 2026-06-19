@@ -96,7 +96,7 @@ const PATTERNS = [
     antigens: 'Sm, U1-RNP',
     clinicalAssociation: 'Mixed connective tissue disease (MCTD), SLE',
     confusedWith: ['AC-4', 'AC-6'],
-    goblinNote: 'Only ~65% of labs can reliably tell AC-4 from AC-5 apart. The coarse speckles are Sm and U1-RNP territory.',
+    goblinNote: 'Telling AC-4 from AC-5 apart is notoriously hard, even for experienced labs. The coarse speckles are Sm and U1-RNP territory.',
     frequency: 'common',
     type: 'coarseSpeckled',
     images: ["/images/patterns/ac-5/1473302619-0.jpg", "/images/patterns/ac-5/1473302619-1.jpg", "/images/patterns/ac-5/1505097854-0.jpg", "/images/patterns/ac-5/1617152146-0.jpg", "/images/patterns/ac-5/1625699513-0.jpg"],
@@ -109,7 +109,7 @@ const PATTERNS = [
     tier: 2,
     description: 'Multiple discrete dots (6-20+) throughout nucleus, random distribution.',
     keyFeature: '6-20+ discrete bright dots, random pattern',
-    antigens: 'Sp100',
+    antigens: 'Sp100, PML protein, MJ/NXP-2',
     clinicalAssociation: 'Primary biliary cholangitis (PBC)',
     confusedWith: ['AC-3', 'AC-7'],
     goblinNote: 'More dots than AC-7 but fewer and bigger than centromere. When the liver\'s complaining, sometimes this is what you see.',
@@ -123,12 +123,12 @@ const PATTERNS = [
     category: 'nuclear',
     level: 'expert',
     tier: 2,
-    description: '1-6 discrete bright dots per nucleus (Cajal bodies or PML bodies).',
+    description: '1-6 discrete bright dots per nucleus (Cajal/coiled bodies).',
     keyFeature: '1-6 bright discrete dots, very few per nucleus',
-    antigens: 'p80-coilin (Cajal bodies), PML protein',
+    antigens: 'p80-coilin (Cajal bodies), SMN complex',
     clinicalAssociation: 'Primary biliary cholangitis, Sj\u00F6gren\'s, SLE',
     confusedWith: ['AC-3', 'AC-6'],
-    goblinNote: 'Sometimes less is more. These are Cajal bodies or PML bodies — specific nuclear organelles lighting up.',
+    goblinNote: 'Sometimes less is more. These are Cajal bodies — specific nuclear organelles lighting up. (PML bodies belong to AC-6, not here.)',
     frequency: 'rare',
     type: 'fewNuclearDots',
     images: ["/images/patterns/ac-7/1473303112-0.jpg", "/images/patterns/ac-7/1473303112-1.jpg", "/images/patterns/ac-7/1473303112-2.jpg", "/images/patterns/ac-7/1473307968-0.jpg", "/images/patterns/ac-7/1505098074-0.jpg"],
@@ -176,7 +176,7 @@ const PATTERNS = [
     antigens: 'RNA polymerase I, hUBF/NOR-90',
     clinicalAssociation: 'Systemic sclerosis, SLE',
     confusedWith: ['AC-8', 'AC-9'],
-    goblinNote: 'The nucleolus is spotted — speckles confined to just the nucleolus, not the whole nucleus. Only about a third of lab professionals can reliably sub-type the nucleolar trio.',
+    goblinNote: 'The nucleolus is spotted — speckles confined to just the nucleolus, not the whole nucleus. Reliably sub-typing the nucleolar trio (AC-8/9/10) trips up many lab professionals.',
     frequency: 'less common',
     type: 'nucleolarSpeckled',
     images: ["/images/patterns/ac-10/1473303336-0.jpg", "/images/patterns/ac-10/1473303368-0.jpg", "/images/patterns/ac-10/1473309686-0.jpg", "/images/patterns/ac-10/1473309724-0.jpg", "/images/patterns/ac-10/1473346664-0.jpg"],
@@ -317,10 +317,10 @@ const PATTERNS = [
     tier: 2,
     description: 'Dense homogeneous/fine speckled cytoplasmic staining.',
     keyFeature: 'Dense uniform or fine speckled staining throughout cytoplasm',
-    antigens: 'PL-7, PL-12, ribosomal P protein, SRP (signal recognition particle), Jo-1/histidyl-tRNA synthetase',
+    antigens: 'Ribosomal P protein, PL-7, PL-12, SRP (signal recognition particle)',
     clinicalAssociation: 'Anti-synthetase syndrome, SLE (anti-ribosomal P), polymyositis',
     confusedWith: ['AC-20', 'AC-21'],
-    goblinNote: 'When the cytoplasm glows uniformly — anti-ribosomal P (SLE with neuropsychiatric features) or anti-Jo-1 (the mechanic\'s hands antibody in anti-synthetase syndrome).',
+    goblinNote: 'When the cytoplasm glows uniformly — anti-ribosomal P (SLE with neuropsychiatric features) or anti-PL-7/PL-12 (anti-synthetase syndrome). Jo-1 itself lives next door in AC-20.',
     frequency: 'moderately common',
     type: 'cytoplasmicDenseSpeckled',
     images: ["/images/patterns/ac-19/1473305085-0.jpg", "/images/patterns/ac-19/1473305146-0.jpg", "/images/patterns/ac-19/1473305163-0.jpg", "/images/patterns/ac-19/1473346880-0.jpg", "/images/patterns/ac-19/1617152464-0.jpg"],
@@ -333,10 +333,10 @@ const PATTERNS = [
     tier: 1,
     description: 'Fine speckled pattern in cytoplasm, nucleus appears relatively clean.',
     keyFeature: 'Stars in the cytoplasm, dark nucleus',
-    antigens: 'Jo-1/anti-synthetases, anti-SRP, PL-7, PL-12',
+    antigens: 'Jo-1/histidyl-tRNA synthetase (anti-SRP also reported)',
     clinicalAssociation: 'Polymyositis, dermatomyositis, anti-synthetase syndrome',
     confusedWith: ['AC-19', 'AC-21'],
-    goblinNote: 'Stars in the cytoplasm, dark nucleus. This is one of the most commonly detected cytoplasmic patterns.',
+    goblinNote: 'Stars in the cytoplasm, dark nucleus. Anti-Jo-1 here is the "mechanic\'s hands" antibody of anti-synthetase syndrome. One of the most commonly detected cytoplasmic patterns.',
     frequency: 'very common',
     type: 'cytoplasmicSpeckled',
     images: ["/images/patterns/ac-20/1473305217-0.jpg", "/images/patterns/ac-20/1473305217-1.jpg", "/images/patterns/ac-20/1473305237-0.jpg", "/images/patterns/ac-20/1473305237-1.jpg", "/images/patterns/ac-20/1473346896-0.jpg"],
@@ -450,7 +450,7 @@ const PATTERNS = [
     clinicalAssociation: 'Various autoimmune',
     confusedWith: ['AC-25', 'AC-28'],
     goblinNote: 'The bridge between two dividing cells lights up — a single bright dot right at the pinch point where one cell becomes two.',
-    frequency: 'rare (most common rare pattern at 0.78%)',
+    frequency: 'rare (among the more frequently seen of the rare mitotic patterns)',
     type: 'intercellularBridge',
     images: ["/images/patterns/ac-27/1473306403-0.jpg", "/images/patterns/ac-27/1473306447-0.jpg", "/images/patterns/ac-27/1473306448-1.jpg", "/images/patterns/ac-27/1473309430-0.jpg", "/images/patterns/ac-27/1505098287-0.jpg"],
   },
@@ -520,5 +520,60 @@ const PATTERNS = [
     images: ["/images/patterns/ac-31/TfLDMuDPckI26UEmXIJWDB4iEhWG7shedWh429KV.jpg", "/images/patterns/ac-31/VqVXrxjVvJYDtPbsg0md132i96C0YNcR5hvV1UP5.jpg", "/images/patterns/ac-31/ZSOnGFCOyR4uX90se83o1HBvdD9W3poohjMZ0PgL.jpg", "/images/patterns/ac-31/bkoXTPuzOCaMowRJn6Bwtm5628TCiTiXW7nyrHpz.jpg", "/images/patterns/ac-31/gDH8O6zYbJhSXaaqzq467uDjMg71IsDaMYZgTgCE.jpg"],
   },
 ];
+
+// ============================================================================
+// CITATIONS
+// Each pattern links to (1) its official ICAP page and (2) one curated primary
+// or review article. All PMIDs were confirmed against PubMed on 2026-06-19.
+// The "Recent research" list in Learn Mode is layered on top from research.json,
+// which pubmed_scan.py regenerates — see that script's header for how to run it.
+// ============================================================================
+export const CITATIONS = {
+  'AC-0':  { pmid: '30862649', cite: 'Damoiseaux et al. 2019, Ann Rheum Dis' },
+  'AC-1':  { pmid: '40869539', cite: 'Pagkopoulou et al. 2025, J Clin Med' },
+  'AC-2':  { pmid: '32127038', cite: 'Ortiz-Hernandez et al. 2020, Auto Immun Highlights' },
+  'AC-3':  { pmid: '6384675',  cite: 'Powell et al. 1984, Mayo Clin Proc' },
+  'AC-4':  { pmid: '27383445', cite: 'Brito-Zerón et al. 2016, Nat Rev Dis Primers' },
+  'AC-5':  { pmid: '29796907', cite: 'Dima et al. 2018, Rheumatol Int' },
+  'AC-6':  { pmid: '19861957', cite: 'Granito et al. 2009, Am J Gastroenterol' },
+  'AC-7':  { pmid: '2033369',  cite: 'Andrade et al. 1991, J Exp Med' },
+  'AC-8':  { pmid: '33775087', cite: 'Wielosz et al. 2020, Ann Agric Environ Med' },
+  'AC-9':  { pmid: '27864990', cite: 'Tall et al. 2017, Scand J Immunol' },
+  'AC-10': { pmid: '35258843', cite: 'Satoh et al. 2022, Clin Rev Allergy Immunol' },
+  'AC-11': { pmid: '8744613',  cite: 'Hill et al. 1996, Aust N Z J Med' },
+  'AC-12': { pmid: '37302574', cite: 'Wang et al. 2023, Ann Hepatol' },
+  'AC-13': { pmid: '22381917', cite: 'Mahler et al. 2012, Autoimmun Rev' },
+  'AC-14': { pmid: '20933614', cite: 'Fritzler et al. 2010, Autoimmun Rev' },
+  'AC-15': { pmid: '18176872', cite: 'Villalta et al. 2008, Autoimmunity' },
+  'AC-16': { pmid: '30862649', cite: 'Damoiseaux et al. 2019, Ann Rheum Dis' },
+  'AC-17': { pmid: '17643934', cite: 'Renaudineau et al. 2007, Autoimmun Rev' },
+  'AC-18': { pmid: '23224965', cite: 'Bloch et al. 2013, Adv Exp Med Biol' },
+  'AC-19': { pmid: '17426359', cite: 'Kiss et al. 2007, Clin Rev Allergy Immunol' },
+  'AC-20': { pmid: '24424190', cite: 'Mahler et al. 2014, Autoimmun Rev' },
+  'AC-21': { pmid: '26364546', cite: 'Carey et al. 2015, Lancet' },
+  'AC-22': { pmid: '15059272', cite: 'Nozawa et al. 2003, Arthritis Res Ther' },
+  'AC-23': { pmid: '26877604', cite: 'Keppeke et al. 2016, World J Gastroenterol' },
+  'AC-24': { pmid: '1751966',  cite: 'Balczon et al. 1991, Cell Motil Cytoskeleton' },
+  'AC-25': { pmid: '18240009', cite: 'Mozo et al. 2008, J Clin Immunol' },
+  'AC-26': { pmid: '8843854',  cite: 'Andrade et al. 1996, Arthritis Rheum' },
+  'AC-27': { pmid: '7907337',  cite: 'Casiano et al. 1993, J Cell Sci' },
+  'AC-28': { pmid: '24387111', cite: 'Kakinuma et al. 2003, Mod Rheumatol' },
+  'AC-29': { pmid: '30658650', cite: 'Cottin et al. 2019, Respir Res' },
+  'AC-30': { pmid: '39187221', cite: 'Andrade et al. 2024, Autoimmun Rev' },
+  'AC-31': { pmid: '34675922', cite: 'Röber et al. 2021, Front Immunol' },
+};
+
+// Build the reference links for a pattern: official ICAP page + curated paper.
+export function patternReferences(patternId) {
+  const acNum = patternId.replace('AC-', '');
+  const refs = [
+    { label: `ICAP ${patternId} (anapatterns.org)`, url: `https://anapatterns.org/view_pattern.php?pattern=${acNum}` },
+  ];
+  const c = CITATIONS[patternId];
+  if (c) {
+    refs.push({ label: c.cite, url: `https://pubmed.ncbi.nlm.nih.gov/${c.pmid}/` });
+  }
+  return refs;
+}
 
 export default PATTERNS;
